@@ -28,24 +28,32 @@ app.listen(
 
 //afficher le contenu de l'api pokedex DATA
 app.get('/', (req, res) => {
+
+	//lecture du fichier api
 	fs.open(POKEDEX_SRC, 'r', (err, data) => {
 		if (err) {
 		console.error(err);
 			return;
 		}
+		//lecture du fichier api
 		const pokedex = fs.readFileSync(POKEDEX_SRC, 'utf8');
 		res.end(pokedex);
 		
 	});
 });
 
+
+//route qui affiche un pokémon au hasard
 app.get('/hasard', (req, res) => {
+	
 	fs.open(POKEDEX_SRC, 'r', (err, data) => {
 		if (err) {
 		console.error(err);
 			return;
 		}
-		const donneeeeeees = fs.readFileSync(POKEDEX_SRC, 'utf8');
+		//lecture du fichier api
+		const donneeeeeees = fs.readFileSync(POKEDEX_SRC, 'utf8')
+		//on transforme l'api en liste
 		const pokedex = JSON.parse(donneeeeeees);
 		var random = Math.floor(Math.random() * 809);
 		res.json(pokedex[random]);
@@ -56,14 +64,18 @@ app.get('/pokemon/id/:id', (req, res) => {
 	const id = parseInt(req.params.id);
 	
 	console.log(id);
+	
 	fs.open(POKEDEX_SRC, 'r', (err, data) => {
 		if (err) {
 		console.error(err);
 			return;
 		}
+		//lecture du fichier api
 		const donneeeeeees = fs.readFileSync(POKEDEX_SRC, 'utf8');
+		//on transforme l'api en liste
 		const pokedex = JSON.parse(donneeeeeees);
-		
+
+		//on recherche le pokemon dans la liste avec le bon id
 		const pokemon_id_chercher = pokedex.filter(pokemon => pokemon.id === id)
 		res.json(pokemon_id_chercher);
 	});
@@ -74,14 +86,17 @@ app.get('/pokemon/name/:name', (req, res) => {
 	console.log(req.params.name);
 	const name = req.params.name;
 	
-	
+	//lecture du fichier api
 	fs.readFile(POKEDEX_SRC, 'utf8', (err, data) => {
 		if (err) {
 		  console.error(err);
 		  return;
 		}
-		
+
+		//on transforme l'api en liste
 		const pokedex = JSON.parse(data);
+		//on ramene le nom en majuscule de la recherche et des listes
+		//on recherche parmi les éléments
 		const pokemon_name_chercher = pokedex.find(
 		  (pokemon) => pokemon.name.french.toLowerCase() === name.toLowerCase()
 		);
