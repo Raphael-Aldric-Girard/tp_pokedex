@@ -18,7 +18,7 @@ const app = express();
 // Lancement du serveur et attendre
 app.listen(
  PORT,
- '192.168.1.61',
+ '172.16.197.1',
  () => {
  console.log('Server Pokedex is listening on ' + PORT);
  }
@@ -88,4 +88,40 @@ app.get('/pokemon/name/:name', (req, res) => {
 	
 		res.json(pokemon_name_chercher);
 	  });
+});
+
+// recherche par type
+app.get('/pokemon/type/:type', (req, res) => {
+
+	//on recupère le parametre type
+	const type = req.params.type;
+	
+
+	//on lit le fichier pokedex.json
+	fs.readFile(POKEDEX_SRC, 'utf8', (err, data) => {
+
+		//cas d'erreur dez lecture du fichier
+		if(err){
+			res.json({error: "Erreur de lecture du fichier"});
+			return;
+		}
+		//on parse les données JSON
+		const pokedex = JSON.parse(data);
+
+		var pokemons_type_chercher = "";
+		//afficher les types
+		for (let i = 1; i < pokedex.length; i++) {
+			if(pokedex[i].type.includes(type)){
+				pokemons_type_chercher+=pokedex[i].name.french + ", ";
+			}
+		}
+		
+		if(pokemons_type_chercher.length == 0){
+			res.json({error: "Aucun pokemon de ce type trouvé, vérifier bien que le type existe et qu'il soit écrit correctement (exemple : Fire, Water, Grass, Electric, Psychic, etc.)"});
+		}
+		else{
+			res.json(pokemons_type_chercher);
+		}
+
+	});
 });
